@@ -142,7 +142,7 @@ function downloadReport(results, brandName, brandNameAr, industry, country, rLan
   const pc = p => (p === "high" ? "#dc2626" : p === "medium" ? "#d97706" : "#16a34a");
   const plat = PLATFORMS.map(p => { const d = results.platforms?.[p.id]; if (!d) return ""; return `<tr><td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-weight:600;">${p.name}</td><td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="padding:2px 10px;border-radius:12px;font-weight:700;font-size:12px;color:#fff;background:${sc(d.visibility_score)}">${d.visibility_score}</span></td><td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:center;color:${d.is_mentioned?"#16a34a":"#dc2626"}">${d.is_mentioned?"✓":"✗"}</td><td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:center;">${d.arabic_quality}</td><td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:center;">${d.sentiment}</td></tr>`; }).join("");
   const recs = (results.recommendations||[]).map((r,i)=>`<div style="page-break-inside:avoid;border:1px solid #e5e7eb;border-radius:8px;padding:14px;margin-bottom:10px;border-left:4px solid ${pc(r.priority)};"><h4 style="margin:0 0 4px;font-size:13px;">${i+1}. ${r.title} <span style="font-size:9px;color:${pc(r.priority)};">[${r.priority}]</span></h4><p style="margin:0 0 6px;font-size:11px;color:#4b5563;line-height:1.4;">${r.description}</p>${r.action_items?.length?r.action_items.map((a,j)=>`<div style="font-size:10px;color:#374151;margin-bottom:2px;">${j+1}. ${a}</div>`).join(""):""}</div>`).join("");
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bayyina.ai — ${brandName}</title><style>@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Outfit',sans-serif;color:#111}@media print{.no-print{display:none!important}@page{margin:0.5in}}</style></head><body><div class="no-print" style="position:fixed;top:0;left:0;right:0;background:#0a0a0f;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;z-index:999;"><span style="color:#d4a574;font-weight:700;">Bayyina.ai Report — Free Trial</span><button onclick="window.print()" style="background:linear-gradient(135deg,#d4a574,#b8860b);border:none;padding:8px 20px;border-radius:6px;color:#0a0a0f;font-weight:700;cursor:pointer;">⬇ Save as PDF</button></div><div class="no-print" style="height:48px;"></div><div style="background:linear-gradient(135deg,#0a0a0f,#1a1520);padding:32px;color:#fff;"><h1 style="font-size:22px;font-weight:800;margin-bottom:4px;">${brandName}${brandNameAr?` — ${brandNameAr}`:""}</h1><div style="font-size:11px;color:rgba(255,255,255,0.4);">${indLabel} · ${country} · ${date}</div></div><div style="background:#f8f9fa;padding:20px 32px;display:flex;gap:24px;flex-wrap:wrap;border-bottom:1px solid #e5e7eb;"><div style="text-align:center;"><div style="font-size:32px;font-weight:800;color:${sc(results.overall_score)};">${results.overall_score}</div><div style="font-size:9px;color:#6b7280;">OVERALL</div></div>${[{s:results.brand_recognition_score,l:"RECOGNITION"},{s:results.arabic_content_score,l:"ARABIC"},{s:results.citation_reach_score,l:"CITATION"},{s:results.content_depth_score,l:"DEPTH"},{s:results.sentiment_index,l:"SENTIMENT"}].map(k=>k.s!==undefined?`<div style="text-align:center;"><div style="font-size:22px;font-weight:700;color:${sc(k.s)};">${k.s}</div><div style="font-size:9px;color:#9ca3af;">${k.l}</div></div>`:"").join("")}</div><div style="padding:20px 32px;">${(results.key_findings||[]).map(f=>`<div style="margin-bottom:4px;padding:6px 10px;background:#fefce8;border-left:3px solid #eab308;font-size:11px;color:#374151;">${f}</div>`).join("")}<h2 style="font-size:14px;margin:16px 0 8px;">Platform Analysis</h2><table style="width:100%;border-collapse:collapse;font-size:11px;"><thead><tr style="background:#f3f4f6;"><th style="padding:6px;text-align:left;font-size:9px;border-bottom:2px solid #e5e7eb;">Platform</th><th style="padding:6px;text-align:center;font-size:9px;border-bottom:2px solid #e5e7eb;">Score</th><th style="padding:6px;text-align:center;font-size:9px;border-bottom:2px solid #e5e7eb;">Mentioned</th><th style="padding:6px;text-align:center;font-size:9px;border-bottom:2px solid #e5e7eb;">Arabic</th><th style="padding:6px;text-align:center;font-size:9px;border-bottom:2px solid #e5e7eb;">Sentiment</th></tr></thead><tbody>${plat}</tbody></table><h2 style="font-size:14px;margin:16px 0 8px;">Recommendations</h2>${recs}</div><div style="background:#0a0a0f;padding:14px 32px;color:rgba(255,255,255,0.4);font-size:9px;display:flex;justify-content:space-between;margin-top:20px;"><span>Confidential — Bayyina.ai (بيّنة) · Free Trial Report</span><span>${date}</span></div></body></html>`;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bayyina.ai — ${brandName}</title><style>@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Outfit',sans-serif;color:#111}@media print{.no-print{display:none!important}@page{margin:0.5in}}</style></head><body><div class="no-print" style="position:fixed;top:0;left:0;right:0;background:#0a0a0f;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;z-index:999;"><span style="color:#d4a574;font-weight:700;">Bayyina.ai Report — Free Trial</span><button onclick="window.print()" style="background:linear-gradient(135deg,#d4a574,#b8860b);border:none;padding:8px 20px;border-radius:6px;color:#0a0a0f;font-weight:700;cursor:pointer;">⬇ Save as PDF</button></div><div class="no-print" style="height:48px;"></div><div style="background:linear-gradient(135deg,#0a0a0f,#1a1520);padding:32px;color:#fff;"><h1 style="font-size:22px;font-weight:800;margin-bottom:4px;">${brandName}${brandNameAr?` — ${brandNameAr}`:""}</h1><div style="font-size:11px;color:rgba(255,255,255,0.65);">${indLabel} · ${country} · ${date}</div></div><div style="background:#f8f9fa;padding:20px 32px;display:flex;gap:24px;flex-wrap:wrap;border-bottom:1px solid #e5e7eb;"><div style="text-align:center;"><div style="font-size:32px;font-weight:800;color:${sc(results.overall_score)};">${results.overall_score}</div><div style="font-size:9px;color:#6b7280;">OVERALL</div></div>${[{s:results.brand_recognition_score,l:"RECOGNITION"},{s:results.arabic_content_score,l:"ARABIC"},{s:results.citation_reach_score,l:"CITATION"},{s:results.content_depth_score,l:"DEPTH"},{s:results.sentiment_index,l:"SENTIMENT"}].map(k=>k.s!==undefined?`<div style="text-align:center;"><div style="font-size:22px;font-weight:700;color:${sc(k.s)};">${k.s}</div><div style="font-size:9px;color:#9ca3af;">${k.l}</div></div>`:"").join("")}</div><div style="padding:20px 32px;">${(results.key_findings||[]).map(f=>`<div style="margin-bottom:4px;padding:6px 10px;background:#fefce8;border-left:3px solid #eab308;font-size:11px;color:#374151;">${f}</div>`).join("")}<h2 style="font-size:14px;margin:16px 0 8px;">Platform Analysis</h2><table style="width:100%;border-collapse:collapse;font-size:11px;"><thead><tr style="background:#f3f4f6;"><th style="padding:6px;text-align:left;font-size:9px;border-bottom:2px solid #e5e7eb;">Platform</th><th style="padding:6px;text-align:center;font-size:9px;border-bottom:2px solid #e5e7eb;">Score</th><th style="padding:6px;text-align:center;font-size:9px;border-bottom:2px solid #e5e7eb;">Mentioned</th><th style="padding:6px;text-align:center;font-size:9px;border-bottom:2px solid #e5e7eb;">Arabic</th><th style="padding:6px;text-align:center;font-size:9px;border-bottom:2px solid #e5e7eb;">Sentiment</th></tr></thead><tbody>${plat}</tbody></table><h2 style="font-size:14px;margin:16px 0 8px;">Recommendations</h2>${recs}</div><div style="background:#0a0a0f;padding:14px 32px;color:rgba(255,255,255,0.65);font-size:9px;display:flex;justify-content:space-between;margin-top:20px;"><span>Confidential — Bayyina.ai (بيّنة) · Free Trial Report</span><span>${date}</span></div></body></html>`;
   const blob = new Blob([html], { type: "text/html" }); const url = URL.createObjectURL(blob);
   const a = document.createElement("a"); a.href = url; a.download = `Bayyina-Audit-${brandName.replace(/\s+/g,"-")}-${new Date().toISOString().slice(0,10)}.html`;
   document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(() => URL.revokeObjectURL(url), 5000);
@@ -246,7 +246,7 @@ function ScoreRing({ score, size = 120, strokeWidth = 8, color, label, delay = 0
       <div style={{ position: "absolute", top: 0, left: 0, width: size, height: size, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <span style={{ fontSize: size * 0.28, fontWeight: 700, color: sc(val), fontFamily: "'Outfit'" }}>{val}</span>
       </div>
-      {label && <span style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", textAlign: "center", fontFamily: ff, maxWidth: size + 24 }}>{label}</span>}
+      {label && <span style={{ fontSize: 10, color: "rgba(255,255,255,0.75)", textAlign: "center", fontFamily: ff, maxWidth: size + 24 }}>{label}</span>}
       {showTip && (tooltip || bench) && (
         <div ref={tipRef} style={tipStyle}>
           {tooltip && <p style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", margin: bench ? "0 0 8px" : 0, lineHeight: 1.5, fontFamily: ff }}>{tooltip}</p>}
@@ -257,8 +257,8 @@ function ScoreRing({ score, size = 120, strokeWidth = 8, color, label, delay = 0
               <span style={{ fontSize: 9, color: "#f59e0b", background: "rgba(245,158,11,0.1)", padding: "2px 5px", borderRadius: 3 }}>{tR.benchGood}: {bench.good}</span>
               <span style={{ fontSize: 9, color: "#ef4444", background: "rgba(239,68,68,0.1)", padding: "2px 5px", borderRadius: 3 }}>{tR.benchPoor}: {bench.poor}</span>
             </div>
-            <p style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", margin: "0 0 3px" }}>{tR.benchAvg}: {bench.avg}</p>
-            <p style={{ fontSize: 9, color: "rgba(255,255,255,0.35)", margin: 0, lineHeight: 1.4, fontStyle: "italic" }}>{bench.note}</p>
+            <p style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", margin: "0 0 3px" }}>{tR.benchAvg}: {bench.avg}</p>
+            <p style={{ fontSize: 9, color: "rgba(255,255,255,0.6)", margin: 0, lineHeight: 1.4, fontStyle: "italic" }}>{bench.note}</p>
           </div>)}
           <div style={arrowStyle} />
         </div>
@@ -279,9 +279,9 @@ function PlatformCard({ platform, data, delay }) {
         {[{ l: "Mentioned", v: data?.is_mentioned ? "✓" : "✗", c: data?.is_mentioned ? "#22c55e" : "#ef4444" },
           { l: "Arabic", v: data?.arabic_quality==="good"?"Strong":data?.arabic_quality==="partial"?"Weak":"None", c: data?.arabic_quality==="good"?"#22c55e":data?.arabic_quality==="partial"?"#f59e0b":"#ef4444" },
           { l: "Sentiment", v: data?.sentiment||"N/A", c: data?.sentiment==="positive"?"#22c55e":"#f59e0b" }
-        ].map((r,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:3,fontSize:10}}><span style={{color:"rgba(255,255,255,0.35)"}}>{r.l}</span><span style={{fontWeight:600,color:r.c}}>{r.v}</span></div>)}
+        ].map((r,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:3,fontSize:10}}><span style={{color:"rgba(255,255,255,0.6)"}}>{r.l}</span><span style={{fontWeight:600,color:r.c}}>{r.v}</span></div>)}
       </div>
-      {data?.summary && <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginTop: 8, lineHeight: 1.5 }}>{data.summary}</p>}
+      {data?.summary && <p style={{ fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 8, lineHeight: 1.5 }}>{data.summary}</p>}
     </div>
   );
 }
@@ -299,23 +299,23 @@ function RecCard({ rec, rl }) {
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3, flexWrap: "wrap" }}>
             <span style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", color: pc[rec.priority], background: `${pc[rec.priority]}15`, padding: "2px 6px", borderRadius: 3 }}>{rec.priority}</span>
-            <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)" }}>{rec.category}</span>
+            <span style={{ fontSize: 9, color: "rgba(255,255,255,0.45)" }}>{rec.category}</span>
             {rec.timeline && <span style={{ fontSize: 9, color: "rgba(212,165,116,0.6)", background: "rgba(212,165,116,0.08)", padding: "2px 6px", borderRadius: 3 }}>⏱ {rec.timeline}</span>}
           </div>
           <h4 style={{ fontSize: 13, fontWeight: 600, color: "#fff", margin: 0 }}>{rec.title}</h4>
         </div>
-        <span style={{ fontSize: 14, color: "rgba(255,255,255,0.2)", transform: open?"rotate(180deg)":"", transition: "0.3s", flexShrink: 0 }}>▾</span>
+        <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", transform: open?"rotate(180deg)":"", transition: "0.3s", flexShrink: 0 }}>▾</span>
       </div>
       {open && (
         <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.06)", animation: "fadeIn 0.3s" }}>
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: "0 0 10px", lineHeight: 1.7 }}>{rec.description}</p>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", margin: "0 0 10px", lineHeight: 1.7 }}>{rec.description}</p>
           {(rec.estimated_impact||rec.estimated_effort)&&<div style={{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}}>
-            {rec.estimated_impact&&<div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:6,padding:"4px 9px"}}><div style={{fontSize:9,color:"rgba(255,255,255,0.25)"}}>{t.impact}</div><div style={{fontSize:11,fontWeight:600,color:rec.estimated_impact==="high"?"#22c55e":"#f59e0b"}}>{rec.estimated_impact}</div></div>}
-            {rec.estimated_effort&&<div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:6,padding:"4px 9px"}}><div style={{fontSize:9,color:"rgba(255,255,255,0.25)"}}>{t.effort}</div><div style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.5)"}}>{rec.estimated_effort}</div></div>}
+            {rec.estimated_impact&&<div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:6,padding:"4px 9px"}}><div style={{fontSize:9,color:"rgba(255,255,255,0.5)"}}>{t.impact}</div><div style={{fontSize:11,fontWeight:600,color:rec.estimated_impact==="high"?"#22c55e":"#f59e0b"}}>{rec.estimated_impact}</div></div>}
+            {rec.estimated_effort&&<div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:6,padding:"4px 9px"}}><div style={{fontSize:9,color:"rgba(255,255,255,0.5)"}}>{t.effort}</div><div style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.75)"}}>{rec.estimated_effort}</div></div>}
           </div>}
           {rec.action_items?.length>0&&<div style={{marginBottom:8}}><p style={{fontSize:9,fontWeight:700,textTransform:"uppercase",color:"rgba(212,165,116,0.6)",marginBottom:4}}>{t.steps}</p>
-            {rec.action_items.map((it,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:4}}><div style={{width:15,height:15,borderRadius:"50%",background:"rgba(212,165,116,0.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:8,color:"#d4a574",fontWeight:700}}>{i+1}</div><span style={{fontSize:11,color:"rgba(255,255,255,0.45)",lineHeight:1.5}}>{it}</span></div>)}</div>}
-          {rec.kpis?.length>0&&<div style={{marginBottom:6}}><p style={{fontSize:9,fontWeight:700,textTransform:"uppercase",color:"rgba(212,165,116,0.6)",marginBottom:3}}>{t.kpis}</p><div style={{display:"flex",gap:4,flexWrap:"wrap"}}>{rec.kpis.map((k,i)=><span key={i} style={{fontSize:10,color:"rgba(255,255,255,0.4)",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:4,padding:"2px 6px"}}>{k}</span>)}</div></div>}
+            {rec.action_items.map((it,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:4}}><div style={{width:15,height:15,borderRadius:"50%",background:"rgba(212,165,116,0.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:8,color:"#d4a574",fontWeight:700}}>{i+1}</div><span style={{fontSize:11,color:"rgba(255,255,255,0.7)",lineHeight:1.5}}>{it}</span></div>)}</div>}
+          {rec.kpis?.length>0&&<div style={{marginBottom:6}}><p style={{fontSize:9,fontWeight:700,textTransform:"uppercase",color:"rgba(212,165,116,0.6)",marginBottom:3}}>{t.kpis}</p><div style={{display:"flex",gap:4,flexWrap:"wrap"}}>{rec.kpis.map((k,i)=><span key={i} style={{fontSize:10,color:"rgba(255,255,255,0.65)",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:4,padding:"2px 6px"}}>{k}</span>)}</div></div>}
           {rec.tools_needed?.length>0&&<div><p style={{fontSize:9,fontWeight:700,textTransform:"uppercase",color:"rgba(212,165,116,0.6)",marginBottom:3}}>{t.tools}</p><div style={{display:"flex",gap:4,flexWrap:"wrap"}}>{rec.tools_needed.map((tl,i)=><span key={i} style={{fontSize:10,color:"#d4a574",background:"rgba(212,165,116,0.06)",border:"1px solid rgba(212,165,116,0.1)",borderRadius:4,padding:"2px 6px"}}>{tl}</span>)}</div></div>}
         </div>
       )}
@@ -350,10 +350,10 @@ function ChatAgent({ lang }) {
     <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000, width: "min(360px, calc(100vw - 32px))", height: 420, maxHeight: "calc(100vh - 40px)", background: "#0f0f18", border: "1px solid rgba(212,165,116,0.2)", borderRadius: 18, display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 8px 40px rgba(0,0,0,0.6)", direction: dir, animation: "slideUp 0.3s ease" }}>
       <div style={{ padding: "11px 14px", background: "rgba(212,165,116,0.08)", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontWeight: 700, color: "#d4a574", fontSize: 13 }}>{t.title}</span>
-        <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 18, cursor: "pointer" }}>×</button>
+        <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.65)", fontSize: 18, cursor: "pointer" }}>×</button>
       </div>
       <div ref={ref} style={{ flex: 1, overflowY: "auto", padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-        {msgs.length===0&&<p style={{ fontSize: 12, color: "rgba(255,255,255,0.25)", textAlign: "center", marginTop: 50 }}>{lang === "ar" ? "مرحباً! كيف يمكنني مساعدتك؟" : "Hi! Ask me anything about AI visibility."}</p>}
+        {msgs.length===0&&<p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 50 }}>{lang === "ar" ? "مرحباً! كيف يمكنني مساعدتك؟" : "Hi! Ask me anything about AI visibility."}</p>}
         {msgs.map((m,i)=><div key={i} style={{ alignSelf:m.role==="user"?"flex-end":"flex-start", maxWidth: "82%", background:m.role==="user"?"rgba(212,165,116,0.12)":"rgba(255,255,255,0.04)", borderRadius: 10, padding: "8px 12px" }}><p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.75)", lineHeight: 1.6 }}>{m.text}</p></div>)}
         {loading&&<div style={{alignSelf:"flex-start",padding:"8px 12px"}}><span style={{color:"rgba(212,165,116,0.4)",fontSize:12,animation:"blink 1s infinite"}}>●●●</span></div>}
       </div>
@@ -480,7 +480,7 @@ function LoadingAnim({ stage, lang }) {
       {/* Status label with typing feel */}
       <div style={{ textAlign: "center", minHeight: 44 }}>
         <p key={stage} style={{ fontSize: 14, color: "#d4a574", fontWeight: 600, fontFamily: ff, animation: "labelFade 0.6s ease", margin: "0 0 6px" }}>{labels[stage % labels.length]}</p>
-        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", margin: 0, fontFamily: ff }}>{Math.round(progress)}%</p>
+        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", margin: 0, fontFamily: ff }}>{Math.round(progress)}%</p>
       </div>
 
       {/* Stage dots */}
@@ -533,6 +533,10 @@ export default function BayyinaAI() {
   const [error, setError] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [contactSent, setContactSent] = useState(false);
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMsg, setContactMsg] = useState("");
+  const [contactLoading, setContactLoading] = useState(false);
   const [auditUsed, setAuditUsed] = useState(false); // one-time gate
   // Lead capture
   const [leadName, setLeadName] = useState("");
@@ -551,11 +555,18 @@ export default function BayyinaAI() {
   const goHome = () => { setView("home"); setMobileMenu(false); setTimeout(() => document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" }), 50); };
   const scrollTo = id => { if (view !== "home") setView("home"); setMobileMenu(false); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 100); };
 
-  const submitLead = () => {
-    if (!leadName.trim()||!leadEmail.trim()||!leadCompany.trim()||!leadTitle.trim()) { setLeadError(t.gate.emailErr ? lang === "ar" ? "يرجى ملء جميع الحقول" : "Please fill in all fields" : ""); setLeadError(lang === "ar" ? "يرجى ملء جميع الحقول" : "Please fill in all fields"); return; }
+  const submitLead = async () => {
+    if (!leadName.trim()||!leadEmail.trim()||!leadCompany.trim()||!leadTitle.trim()) { setLeadError(lang === "ar" ? "يرجى ملء جميع الحقول" : "Please fill in all fields"); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadEmail)) { setLeadError(lang === "ar" ? "يرجى إدخال بريد إلكتروني صالح" : "Please enter a valid email address"); return; }
     if (!isBusinessEmail(leadEmail)) { setLeadError(t.gate.emailErr); return; }
-    setLeadError(""); setView("audit");
+    setLeadError("");
+    // Send lead to Netlify Forms
+    try {
+      fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ "form-name": "lead-gate", name: leadName, email: leadEmail, company: leadCompany, title: leadTitle }).toString()
+      }).catch(() => {});
+    } catch(e) {}
+    setView("audit");
   };
 
   const handleStartAudit = () => {
@@ -603,7 +614,7 @@ export default function BayyinaAI() {
             <span style={{ fontSize: 16, fontWeight: 700 }}>Bayyina.ai</span>
           </div>
           <div style={{ display: "flex", gap: 4, alignItems: "center" }} className="desk-nav">
-            {navItems.map(n=><button key={n.id} onClick={()=>scrollTo(n.id)} style={{background:"none",border:"none",color:"rgba(255,255,255,0.55)",fontSize:12,fontWeight:500,cursor:"pointer",padding:"6px 9px",fontFamily:ff,transition:"color 0.2s",borderRadius:6}} onMouseEnter={e=>e.target.style.color="#d4a574"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.55)"}>{n.l}</button>)}
+            {navItems.map(n=><button key={n.id} onClick={()=>scrollTo(n.id)} style={{background:"none",border:"none",color:"rgba(255,255,255,0.75)",fontSize:12,fontWeight:500,cursor:"pointer",padding:"6px 9px",fontFamily:ff,transition:"color 0.2s",borderRadius:6}} onMouseEnter={e=>e.target.style.color="#d4a574"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.75)"}>{n.l}</button>)}
             <button onClick={()=>setLang(lang==="en"?"ar":"en")} style={{ background:"rgba(212,165,116,0.1)",border:"1px solid rgba(212,165,116,0.2)",borderRadius:6,padding:"3px 9px",color:"#d4a574",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"'Noto Kufi Arabic'",marginLeft:4 }}>{lang==="en"?"عربي":"EN"}</button>
           </div>
           <button onClick={()=>setMobileMenu(!mobileMenu)} style={{ display:"none",background:"none",border:"none",color:"#d4a574",fontSize:20,cursor:"pointer" }} className="mob-btn">{mobileMenu?"✕":"☰"}</button>
@@ -621,10 +632,10 @@ export default function BayyinaAI() {
           <div>
             <section id="hero" style={{ textAlign: "center", padding: "52px 0 24px" }}>
               <Reveal><h2 style={{ fontSize: "clamp(26px, 5vw, 42px)", fontWeight: 800, margin: 0, background: "linear-gradient(135deg, #fff 30%, #d4a574 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1.2, whiteSpace: "pre-line" }}>{t.hero.title}</h2></Reveal>
-              <Reveal delay={200}><p style={{ fontSize: "clamp(13px, 2.5vw, 16px)", color: "rgba(255,255,255,0.4)", margin: "16px auto 0", maxWidth: 540, lineHeight: 1.7 }}>{t.hero.sub}</p></Reveal>
+              <Reveal delay={200}><p style={{ fontSize: "clamp(13px, 2.5vw, 16px)", color: "rgba(255,255,255,0.65)", margin: "16px auto 0", maxWidth: 540, lineHeight: 1.7 }}>{t.hero.sub}</p></Reveal>
               <Reveal delay={400}><button onClick={handleStartAudit} style={{ marginTop: 28, padding: "14px 36px", background: "linear-gradient(135deg, #d4a574, #b8860b)", border: "none", borderRadius: 12, color: "#0a0a0f", fontSize: 15, fontWeight: 700, fontFamily: ff, cursor: "pointer", boxShadow: "0 4px 24px rgba(212,165,116,0.3)", transition: "transform 0.3s, box-shadow 0.3s" }} onMouseEnter={e=>{e.target.style.transform="translateY(-3px)";e.target.style.boxShadow="0 8px 32px rgba(212,165,116,0.4)";}} onMouseLeave={e=>{e.target.style.transform="none";e.target.style.boxShadow="0 4px 24px rgba(212,165,116,0.3)";}}>{t.hero.cta}</button></Reveal>
               <Reveal delay={600}><div style={{ display: "flex", justifyContent: "center", gap: "clamp(20px, 5vw, 48px)", marginTop: 40 }}>
-                {[{ v: t.hero.stat1, l: t.hero.stat1l }, { v: t.hero.stat2, l: t.hero.stat2l }, { v: t.hero.stat3, l: t.hero.stat3l }].map((s,i)=>(<div key={i} style={{ textAlign: "center" }}><div style={{ fontSize: "clamp(20px, 4vw, 32px)", fontWeight: 800, color: "#d4a574" }}>{s.v}</div><div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>{s.l}</div></div>))}
+                {[{ v: t.hero.stat1, l: t.hero.stat1l }, { v: t.hero.stat2, l: t.hero.stat2l }, { v: t.hero.stat3, l: t.hero.stat3l }].map((s,i)=>(<div key={i} style={{ textAlign: "center" }}><div style={{ fontSize: "clamp(20px, 4vw, 32px)", fontWeight: 800, color: "#d4a574" }}>{s.v}</div><div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>{s.l}</div></div>))}
               </div></Reveal>
               <Reveal delay={800}><div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 32 }}>
                 {PLATFORMS.map((p,i)=><div key={p.id} style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: p.color, animation: `float ${3+i*0.5}s ease-in-out infinite`, animationDelay: `${i*0.3}s` }}>{p.icon}</div>)}
@@ -633,7 +644,7 @@ export default function BayyinaAI() {
 
             <section id="about" style={{ padding: "52px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
               <Reveal><h2 style={{ fontSize: "clamp(22px, 4vw, 30px)", fontWeight: 800, color: "#fff", marginBottom: 18 }}>{t.about.title}</h2></Reveal>
-              {[t.about.p1, t.about.p2, t.about.p3].map((p,i)=><Reveal key={i} delay={i*100}><p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, marginBottom: 10 }}>{p}</p></Reveal>)}
+              {[t.about.p1, t.about.p2, t.about.p3].map((p,i)=><Reveal key={i} delay={i*100}><p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, marginBottom: 10 }}>{p}</p></Reveal>)}
             </section>
 
             <section id="how" style={{ padding: "52px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
@@ -643,7 +654,7 @@ export default function BayyinaAI() {
                   <Reveal key={s.n} delay={i*120}><div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:22,transition:"transform 0.3s,border-color 0.3s" }} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.borderColor="rgba(212,165,116,0.2)";}} onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.borderColor="rgba(255,255,255,0.06)";}}>
                     <div style={{ fontSize: 28, fontWeight: 800, color: "rgba(212,165,116,0.15)", marginBottom: 8 }}>{s.n}</div>
                     <h3 style={{ fontSize: 15, fontWeight: 700, color: "#d4a574", margin: "0 0 8px" }}>{s.t}</h3>
-                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{s.d}</p>
+                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, margin: 0 }}>{s.d}</p>
                   </div></Reveal>))}
               </div>
             </section>
@@ -656,7 +667,7 @@ export default function BayyinaAI() {
                     {tier.hl&&<div style={{ position:"absolute",top:12,right:dir==="rtl"?"auto":12,left:dir==="rtl"?12:"auto",fontSize:9,fontWeight:700,color:"#0a0a0f",background:"linear-gradient(135deg,#d4a574,#b8860b)",padding:"3px 10px",borderRadius:4,textTransform:"uppercase" }}>Popular</div>}
                     <h3 style={{ fontSize:18,fontWeight:700,color:"#fff",margin:"0 0 4px" }}>{tier.t}</h3>
                     <div style={{ fontSize:26,fontWeight:800,color:"#d4a574",margin:"8px 0 14px" }}>{tier.p}</div>
-                    <p style={{ fontSize:13,color:"rgba(255,255,255,0.45)",lineHeight:1.7,margin:"0 0 18px" }}>{tier.d}</p>
+                    <p style={{ fontSize:13,color:"rgba(255,255,255,0.7)",lineHeight:1.7,margin:"0 0 18px" }}>{tier.d}</p>
                     <button onClick={()=>scrollTo("contact")} style={{ width:"100%",padding:10,background:tier.hl?"linear-gradient(135deg, #d4a574, #b8860b)":"rgba(255,255,255,0.06)",border:tier.hl?"none":"1px solid rgba(255,255,255,0.1)",borderRadius:8,color:tier.hl?"#0a0a0f":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:ff }}>{t.pricing.cta}</button>
                   </div></Reveal>))}
               </div>
@@ -664,17 +675,27 @@ export default function BayyinaAI() {
 
             <section id="faq" style={{ padding: "52px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
               <Reveal><h2 style={{ fontSize: "clamp(22px, 4vw, 30px)", fontWeight: 800, color: "#fff", marginBottom: 24 }}>{t.faq.title}</h2></Reveal>
-              {[{q:t.faq.q1,a:t.faq.a1},{q:t.faq.q2,a:t.faq.a2},{q:t.faq.q3,a:t.faq.a3},{q:t.faq.q4,a:t.faq.a4},{q:t.faq.q5,a:t.faq.a5}].map((f,i)=>(<Reveal key={i} delay={i*80}><details style={{marginBottom:8,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,overflow:"hidden"}}><summary style={{padding:"13px 16px",cursor:"pointer",fontSize:13,fontWeight:600,color:"#fff"}}>{f.q}</summary><p style={{padding:"0 16px 14px",fontSize:13,color:"rgba(255,255,255,0.45)",lineHeight:1.7,margin:0}}>{f.a}</p></details></Reveal>))}
+              {[{q:t.faq.q1,a:t.faq.a1},{q:t.faq.q2,a:t.faq.a2},{q:t.faq.q3,a:t.faq.a3},{q:t.faq.q4,a:t.faq.a4},{q:t.faq.q5,a:t.faq.a5}].map((f,i)=>(<Reveal key={i} delay={i*80}><details style={{marginBottom:8,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,overflow:"hidden"}}><summary style={{padding:"13px 16px",cursor:"pointer",fontSize:13,fontWeight:600,color:"#fff"}}>{f.q}</summary><p style={{padding:"0 16px 14px",fontSize:13,color:"rgba(255,255,255,0.7)",lineHeight:1.7,margin:0}}>{f.a}</p></details></Reveal>))}
             </section>
 
             <section id="contact" style={{ padding: "52px 0 64px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
               <Reveal><h2 style={{ fontSize: "clamp(22px, 4vw, 30px)", fontWeight: 800, color: "#fff", marginBottom: 24 }}>{t.contact.title}</h2></Reveal>
               {contactSent ? <Reveal><p style={{ color:"#22c55e",fontSize:14,padding:20,background:"rgba(34,197,94,0.1)",borderRadius:12 }}>{t.contact.sent}</p></Reveal> : (
                 <Reveal delay={100}><div style={{ maxWidth:460,display:"flex",flexDirection:"column",gap:12 }}>
-                  <input placeholder={t.contact.name} style={inp()} onFocus={focusIn} onBlur={focusOut} />
-                  <input placeholder={t.contact.email} type="email" style={inp()} onFocus={focusIn} onBlur={focusOut} />
-                  <textarea placeholder={t.contact.message} rows={4} style={inp({ resize: "vertical" })} onFocus={focusIn} onBlur={focusOut} />
-                  <button onClick={()=>setContactSent(true)} style={{ padding:14,background:"linear-gradient(135deg, #d4a574, #b8860b)",border:"none",borderRadius:10,color:"#0a0a0f",fontSize:14,fontWeight:700,fontFamily:ff,cursor:"pointer",transition:"transform 0.2s" }} onMouseEnter={e=>e.target.style.transform="translateY(-2px)"} onMouseLeave={e=>e.target.style.transform="none"}>{t.contact.send}</button>
+                  <input name="name" placeholder={t.contact.name} value={contactName} onChange={e=>setContactName(e.target.value)} style={inp()} onFocus={focusIn} onBlur={focusOut} />
+                  <input name="email" placeholder={t.contact.email} type="email" value={contactEmail} onChange={e=>setContactEmail(e.target.value)} style={inp()} onFocus={focusIn} onBlur={focusOut} />
+                  <textarea name="message" placeholder={t.contact.message} rows={4} value={contactMsg} onChange={e=>setContactMsg(e.target.value)} style={inp({ resize: "vertical" })} onFocus={focusIn} onBlur={focusOut} />
+                  <button disabled={contactLoading} onClick={async()=>{
+                    if(!contactName.trim()||!contactEmail.trim()||!contactMsg.trim()) return;
+                    setContactLoading(true);
+                    try {
+                      await fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: new URLSearchParams({ "form-name": "contact", name: contactName, email: contactEmail, message: contactMsg }).toString()
+                      });
+                      setContactSent(true);
+                    } catch(err) { console.error(err); setContactSent(true); }
+                    setContactLoading(false);
+                  }} style={{ padding:14,background:contactLoading?"rgba(212,165,116,0.5)":"linear-gradient(135deg, #d4a574, #b8860b)",border:"none",borderRadius:10,color:"#0a0a0f",fontSize:14,fontWeight:700,fontFamily:ff,cursor:contactLoading?"wait":"pointer",transition:"transform 0.2s" }} onMouseEnter={e=>!contactLoading&&(e.target.style.transform="translateY(-2px)")} onMouseLeave={e=>e.target.style.transform="none"}>{contactLoading ? "..." : t.contact.send}</button>
                 </div></Reveal>
               )}
             </section>
@@ -687,22 +708,22 @@ export default function BayyinaAI() {
             <Reveal><div style={{ textAlign: "center", marginBottom: 28 }}>
               <div style={{ width: 56, height: 56, borderRadius: 14, background: "linear-gradient(135deg, #d4a574, #b8860b)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, color: "#0a0a0f", fontFamily: "'Noto Kufi Arabic'", margin: "0 auto 16px", boxShadow: "0 4px 24px rgba(212,165,116,0.3)" }}>بـ</div>
               <h2 style={{ fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 800, color: "#fff", margin: "0 0 8px" }}>{t.gate.title}</h2>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", margin: "0 0 6px" }}>{t.gate.sub}</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.65)", margin: "0 0 6px" }}>{t.gate.sub}</p>
               <span style={{ fontSize: 10, color: "#d4a574", background: "rgba(212,165,116,0.1)", padding: "3px 10px", borderRadius: 4 }}>{t.gate.trial}</span>
             </div></Reveal>
             <Reveal delay={150}><div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div><label style={{ fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase" }}>{t.gate.name} *</label>
+              <div><label style={{ fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase" }}>{t.gate.name} *</label>
                 <input value={leadName} onChange={e=>setLeadName(e.target.value)} style={inp()} onFocus={focusIn} onBlur={focusOut} /></div>
-              <div><label style={{ fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase" }}>{t.gate.email} *</label>
+              <div><label style={{ fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase" }}>{t.gate.email} *</label>
                 <input value={leadEmail} onChange={e=>setLeadEmail(e.target.value)} type="email" placeholder="name@company.com" style={inp()} onFocus={focusIn} onBlur={focusOut} />
-                <p style={{ fontSize:10,color:"rgba(255,255,255,0.2)",margin:"4px 0 0" }}>{lang==="ar"?"البريد الشخصي مثل Gmail/Yahoo غير مقبول":"Personal emails (Gmail, Yahoo, Hotmail, etc.) are not accepted"}</p></div>
-              <div><label style={{ fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase" }}>{t.gate.company} *</label>
+                <p style={{ fontSize:10,color:"rgba(255,255,255,0.45)",margin:"4px 0 0" }}>{lang==="ar"?"البريد الشخصي مثل Gmail/Yahoo غير مقبول":"Personal emails (Gmail, Yahoo, Hotmail, etc.) are not accepted"}</p></div>
+              <div><label style={{ fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase" }}>{t.gate.company} *</label>
                 <input value={leadCompany} onChange={e=>setLeadCompany(e.target.value)} style={inp()} onFocus={focusIn} onBlur={focusOut} /></div>
-              <div><label style={{ fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase" }}>{t.gate.jobtitle} *</label>
+              <div><label style={{ fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase" }}>{t.gate.jobtitle} *</label>
                 <input value={leadTitle} onChange={e=>setLeadTitle(e.target.value)} style={inp()} onFocus={focusIn} onBlur={focusOut} /></div>
               {leadError && <p style={{ color:"#ef4444",fontSize:12,margin:0,background:"rgba(239,68,68,0.1)",padding:"8px 12px",borderRadius:8 }}>{leadError}</p>}
               <button onClick={submitLead} style={{ width:"100%",padding:16,marginTop:4,background:"linear-gradient(135deg, #d4a574, #b8860b)",border:"none",borderRadius:12,color:"#0a0a0f",fontSize:15,fontWeight:700,fontFamily:ff,cursor:"pointer",boxShadow:"0 4px 24px rgba(212,165,116,0.3)",transition:"transform 0.3s" }} onMouseEnter={e=>e.target.style.transform="translateY(-2px)"} onMouseLeave={e=>e.target.style.transform="none"}>{t.gate.submit}</button>
-              <p style={{ fontSize:10,color:"rgba(255,255,255,0.2)",textAlign:"center",margin:0 }}>🔒 {t.gate.privacy}</p>
+              <p style={{ fontSize:10,color:"rgba(255,255,255,0.45)",textAlign:"center",margin:0 }}>🔒 {t.gate.privacy}</p>
             </div></Reveal>
           </div>
         )}
@@ -711,32 +732,32 @@ export default function BayyinaAI() {
         {view === "audit" && (
           <div style={{ maxWidth: 620, margin: "0 auto", padding: "28px 0 48px", animation: "fadeIn 0.5s" }}>
             <Reveal><div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18,flexWrap:"wrap",gap:8 }}>
-              <p style={{ fontSize:12,color:"rgba(255,255,255,0.3)",margin:0 }}>{lang==="ar"?`مرحباً ${leadName}`:`Welcome, ${leadName}`} — {leadCompany}</p>
+              <p style={{ fontSize:12,color:"rgba(255,255,255,0.55)",margin:0 }}>{lang==="ar"?`مرحباً ${leadName}`:`Welcome, ${leadName}`} — {leadCompany}</p>
               <span style={{ fontSize:9,color:"#d4a574",background:"rgba(212,165,116,0.1)",padding:"3px 8px",borderRadius:4,fontWeight:600 }}>{lang==="ar"?"تجربة مجانية لمرة واحدة":"FREE ONE-TIME TRIAL"}</span>
             </div></Reveal>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:14 }} className="form-grid">
-              <Reveal delay={50}><div><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.brandEn} *</label>
+              <Reveal delay={50}><div><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.brandEn} *</label>
                 <input value={brandName} onChange={e=>setBrandName(e.target.value)} placeholder="e.g. Aman Hospital" style={inp()} onFocus={focusIn} onBlur={focusOut} /></div></Reveal>
-              <Reveal delay={100}><div><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase",textAlign:"right",fontFamily:"'Noto Kufi Arabic'"}}>{t.form.brandAr}</label>
+              <Reveal delay={100}><div><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase",textAlign:"right",fontFamily:"'Noto Kufi Arabic'"}}>{t.form.brandAr}</label>
                 <input value={brandNameAr} onChange={e=>setBrandNameAr(e.target.value)} dir="rtl" style={inp({fontFamily:"'Noto Kufi Arabic'"})} onFocus={focusIn} onBlur={focusOut} /></div></Reveal>
             </div>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginTop:14 }} className="form-grid">
-              <Reveal delay={150}><div><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.industry} *</label>
+              <Reveal delay={150}><div><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.industry} *</label>
                 <select value={industry} onChange={e=>setIndustry(e.target.value)} style={sel(!!industry)}><option value="" style={{background:"#1a1a2e"}}>...</option>
                   {INDUSTRIES.map(i=><option key={i.value} value={i.value} style={{background:"#1a1a2e"}}>{i.label} — {i.labelAr}</option>)}</select></div></Reveal>
-              <Reveal delay={200}><div><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.market}</label>
+              <Reveal delay={200}><div><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.market}</label>
                 <select value={country} onChange={e=>setCountry(e.target.value)} style={sel(true)}>{["Qatar","Saudi Arabia","UAE","Kuwait","Bahrain","Oman","Egypt","Jordan","MENA Region"].map(c=><option key={c} value={c} style={{background:"#1a1a2e"}}>{c}</option>)}</select></div></Reveal>
             </div>
-            <Reveal delay={250}><div style={{ marginTop:14 }}><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.website}</label>
+            <Reveal delay={250}><div style={{ marginTop:14 }}><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.website}</label>
               <input value={website} onChange={e=>setWebsite(e.target.value)} placeholder="https://..." style={inp()} onFocus={focusIn} onBlur={focusOut} /></div></Reveal>
-            <Reveal delay={300}><div style={{ marginTop:14 }}><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.4)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.queries}</label>
+            <Reveal delay={300}><div style={{ marginTop:14 }}><label style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",display:"block",marginBottom:5,textTransform:"uppercase"}}>{t.form.queries}</label>
               <textarea value={queries} onChange={e=>setQueries(e.target.value)} rows={3} style={inp({resize:"vertical"})} onFocus={focusIn} onBlur={focusOut} />
-              <p style={{ fontSize:10,color:"rgba(255,255,255,0.2)",margin:"4px 0 0" }}>{t.form.queriesHint}</p>
+              <p style={{ fontSize:10,color:"rgba(255,255,255,0.45)",margin:"4px 0 0" }}>{t.form.queriesHint}</p>
               {/* Query examples */}
               {industry && <div style={{ marginTop:10,padding:"10px 14px",background:"rgba(212,165,116,0.04)",border:"1px solid rgba(212,165,116,0.1)",borderRadius:8 }}>
                 <p style={{ fontSize:10,fontWeight:700,color:"rgba(212,165,116,0.7)",margin:"0 0 6px",textTransform:"uppercase" }}>{t.form.exTitle}</p>
                 {queryExamples.map((q,i)=>(
-                  <div key={i} onClick={()=>setQueries(prev=>prev?(prev+"\n"+q):q)} style={{ fontSize:11,color:"rgba(255,255,255,0.45)",cursor:"pointer",padding:"4px 8px",borderRadius:4,marginBottom:3,transition:"background 0.2s",display:"flex",alignItems:"center",gap:6 }}
+                  <div key={i} onClick={()=>setQueries(prev=>prev?(prev+"\n"+q):q)} style={{ fontSize:11,color:"rgba(255,255,255,0.7)",cursor:"pointer",padding:"4px 8px",borderRadius:4,marginBottom:3,transition:"background 0.2s",display:"flex",alignItems:"center",gap:6 }}
                     onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.04)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                     <span style={{ color:"#d4a574",fontSize:10 }}>+</span> {q}
                   </div>
@@ -745,7 +766,7 @@ export default function BayyinaAI() {
             </div></Reveal>
             {error && <p style={{ color:"#ef4444",fontSize:12,margin:"12px 0 0",background:"rgba(239,68,68,0.1)",padding:"8px 12px",borderRadius:8 }}>{error}</p>}
             <Reveal delay={350}><button onClick={runAudit} style={{ width:"100%",padding:16,marginTop:18,background:"linear-gradient(135deg, #d4a574, #b8860b)",border:"none",borderRadius:12,color:"#0a0a0f",fontSize:15,fontWeight:700,fontFamily:ff,cursor:"pointer",boxShadow:"0 4px 24px rgba(212,165,116,0.3)",transition:"transform 0.3s" }} onMouseEnter={e=>e.target.style.transform="translateY(-2px)"} onMouseLeave={e=>e.target.style.transform="none"}>{t.form.run}</button>
-              <p style={{ fontSize:10,color:"rgba(255,255,255,0.2)",textAlign:"center",margin:"6px 0 0" }}>{t.form.running}</p></Reveal>
+              <p style={{ fontSize:10,color:"rgba(255,255,255,0.45)",textAlign:"center",margin:"6px 0 0" }}>{t.form.running}</p></Reveal>
           </div>
         )}
 
@@ -757,7 +778,7 @@ export default function BayyinaAI() {
           <div style={{ maxWidth: 520, margin: "0 auto", padding: "60px 0", textAlign: "center", animation: "fadeIn 0.5s" }}>
             <div style={{ width: 64, height: 64, borderRadius: 16, background: "rgba(212,165,116,0.1)", border: "1px solid rgba(212,165,116,0.2)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: 28 }}>🔒</div>
             <h2 style={{ fontSize: "clamp(20px, 4vw, 26px)", fontWeight: 800, color: "#fff", margin: "0 0 12px" }}>{t.usedAudit.title}</h2>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 28px" }}>{t.usedAudit.sub}</p>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, margin: "0 0 28px" }}>{t.usedAudit.sub}</p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
               <button onClick={()=>scrollTo("contact")} style={{ padding:"14px 28px",background:"linear-gradient(135deg, #d4a574, #b8860b)",border:"none",borderRadius:12,color:"#0a0a0f",fontSize:14,fontWeight:700,fontFamily:ff,cursor:"pointer" }}>{t.usedAudit.cta}</button>
               {results && <button onClick={()=>{setReportLang("en");setView("results");}} style={{ padding:"14px 28px",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,color:"#fff",fontSize:14,fontWeight:600,fontFamily:ff,cursor:"pointer" }}>{t.usedAudit.viewReport}</button>}
@@ -781,8 +802,8 @@ export default function BayyinaAI() {
             <Reveal style={{ overflow: "visible" }}><div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:18,padding:"24px 16px",marginBottom:18,overflow:"visible" }}>
               <div style={{ marginBottom:18 }}>
                 <h2 style={{ fontSize:"clamp(18px, 3.5vw, 24px)",fontWeight:700,color:"#fff",margin:0 }}>{brandName}{brandNameAr&&<span style={{ fontSize:"0.75em",color:"rgba(212,165,116,0.8)",marginLeft:10,fontFamily:"'Noto Kufi Arabic'" }}>{brandNameAr}</span>}</h2>
-                <p style={{ fontSize:12,color:"rgba(255,255,255,0.35)",margin:"3px 0 0" }}>{INDUSTRIES.find(i=>i.value===industry)?.label} · {country}</p>
-                <p style={{ fontSize:10,color:"rgba(255,255,255,0.2)",margin:"2px 0 0" }}>{reportLang==="ar"?"مرّر فوق المقاييس لعرض المعايير القياسية":"Hover over scores to see industry benchmarks"}</p>
+                <p style={{ fontSize:12,color:"rgba(255,255,255,0.6)",margin:"3px 0 0" }}>{INDUSTRIES.find(i=>i.value===industry)?.label} · {country}</p>
+                <p style={{ fontSize:10,color:"rgba(255,255,255,0.45)",margin:"2px 0 0" }}>{reportLang==="ar"?"مرّر فوق المقاييس لعرض المعايير القياسية":"Hover over scores to see industry benchmarks"}</p>
               </div>
               <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(90px, 1fr))",gap:12,justifyItems:"center",overflow:"visible" }}>
                 <ScoreRing score={results.overall_score} size={100} strokeWidth={8} label={tR.results.overall} delay={0} tooltip={tR.tooltips.overall} benchmarkKey="overall" reportLang={reportLang} />
@@ -804,10 +825,10 @@ export default function BayyinaAI() {
               {PLATFORMS.map((p,i)=><PlatformCard key={p.id} platform={p} data={results.platforms?.[p.id]} delay={300+i*100} />)}
             </div>
 
-            {results.arabic_gap_analysis&&<Reveal delay={200}><div style={{ background:"rgba(239,68,68,0.04)",border:"1px solid rgba(239,68,68,0.1)",borderRadius:10,padding:"14px 16px",marginBottom:12 }}><h3 style={{fontSize:10,fontWeight:700,color:"#ef4444",margin:"0 0 4px",textTransform:"uppercase"}}>{tR.results.gap}</h3><p style={{fontSize:12,color:"rgba(255,255,255,0.5)",margin:0,lineHeight:1.6}}>{results.arabic_gap_analysis}</p></div></Reveal>}
-            {results.competitor_insight&&<Reveal delay={250}><div style={{ background:"rgba(59,130,246,0.04)",border:"1px solid rgba(59,130,246,0.1)",borderRadius:10,padding:"14px 16px",marginBottom:20 }}><h3 style={{fontSize:10,fontWeight:700,color:"#3b82f6",margin:"0 0 4px",textTransform:"uppercase"}}>{tR.results.competitor}</h3><p style={{fontSize:12,color:"rgba(255,255,255,0.5)",margin:0,lineHeight:1.6}}>{results.competitor_insight}</p></div></Reveal>}
+            {results.arabic_gap_analysis&&<Reveal delay={200}><div style={{ background:"rgba(239,68,68,0.04)",border:"1px solid rgba(239,68,68,0.1)",borderRadius:10,padding:"14px 16px",marginBottom:12 }}><h3 style={{fontSize:10,fontWeight:700,color:"#ef4444",margin:"0 0 4px",textTransform:"uppercase"}}>{tR.results.gap}</h3><p style={{fontSize:12,color:"rgba(255,255,255,0.75)",margin:0,lineHeight:1.6}}>{results.arabic_gap_analysis}</p></div></Reveal>}
+            {results.competitor_insight&&<Reveal delay={250}><div style={{ background:"rgba(59,130,246,0.04)",border:"1px solid rgba(59,130,246,0.1)",borderRadius:10,padding:"14px 16px",marginBottom:20 }}><h3 style={{fontSize:10,fontWeight:700,color:"#3b82f6",margin:"0 0 4px",textTransform:"uppercase"}}>{tR.results.competitor}</h3><p style={{fontSize:12,color:"rgba(255,255,255,0.75)",margin:0,lineHeight:1.6}}>{results.competitor_insight}</p></div></Reveal>}
 
-            <Reveal delay={300}><h3 style={{ fontSize:14,fontWeight:700,color:"#fff",margin:"0 0 8px" }}>{tR.results.recs} <span style={{fontSize:10,color:"rgba(255,255,255,0.25)",fontWeight:400}}>— {results.recommendations?.length||0} {tR.results.items}</span></h3></Reveal>
+            <Reveal delay={300}><h3 style={{ fontSize:14,fontWeight:700,color:"#fff",margin:"0 0 8px" }}>{tR.results.recs} <span style={{fontSize:10,color:"rgba(255,255,255,0.5)",fontWeight:400}}>— {results.recommendations?.length||0} {tR.results.items}</span></h3></Reveal>
             <div style={{ display:"flex",gap:5,marginBottom:12,flexWrap:"wrap" }}>
               {["high","medium","low"].map(p=>{const n=results.recommendations?.filter(r=>r.priority===p).length||0;const c={high:"#ef4444",medium:"#f59e0b",low:"#22c55e"};return n?<span key={p} style={{fontSize:9,color:c[p],background:`${c[p]}10`,border:`1px solid ${c[p]}25`,borderRadius:4,padding:"2px 6px",fontWeight:600,textTransform:"uppercase"}}>{n} {p}</span>:null;})}
             </div>
@@ -817,13 +838,13 @@ export default function BayyinaAI() {
 
             {results.roadmap_summary&&<Reveal delay={400}><div style={{ background:"rgba(34,197,94,0.04)",border:"1px solid rgba(34,197,94,0.1)",borderRadius:12,padding:"18px 20px",marginBottom:20 }}>
               <h3 style={{ fontSize:12,fontWeight:700,color:"#22c55e",margin:"0 0 12px",textTransform:"uppercase" }}>{tR.results.roadmap}</h3>
-              {[{k:"phase_1",l:tR.results.phase1,tm:tR.results.w14,c:"#22c55e"},{k:"phase_2",l:tR.results.phase2,tm:tR.results.m23,c:"#3b82f6"},{k:"phase_3",l:tR.results.phase3,tm:tR.results.m46,c:"#a855f7"}].map(ph=>results.roadmap_summary[ph.k]?<div key={ph.k} style={{borderLeft:rDir==="ltr"?`3px solid ${ph.c}`:"none",borderRight:rDir==="rtl"?`3px solid ${ph.c}`:"none",paddingLeft:rDir==="ltr"?12:0,paddingRight:rDir==="rtl"?12:0,marginBottom:10}}><span style={{fontSize:12,fontWeight:700,color:ph.c}}>{ph.l}</span><span style={{fontSize:10,color:"rgba(255,255,255,0.25)",marginLeft:6}}>{ph.tm}</span><p style={{fontSize:12,color:"rgba(255,255,255,0.5)",margin:"3px 0 0",lineHeight:1.6}}>{results.roadmap_summary[ph.k]}</p></div>:null)}
+              {[{k:"phase_1",l:tR.results.phase1,tm:tR.results.w14,c:"#22c55e"},{k:"phase_2",l:tR.results.phase2,tm:tR.results.m23,c:"#3b82f6"},{k:"phase_3",l:tR.results.phase3,tm:tR.results.m46,c:"#a855f7"}].map(ph=>results.roadmap_summary[ph.k]?<div key={ph.k} style={{borderLeft:rDir==="ltr"?`3px solid ${ph.c}`:"none",borderRight:rDir==="rtl"?`3px solid ${ph.c}`:"none",paddingLeft:rDir==="ltr"?12:0,paddingRight:rDir==="rtl"?12:0,marginBottom:10}}><span style={{fontSize:12,fontWeight:700,color:ph.c}}>{ph.l}</span><span style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginLeft:6}}>{ph.tm}</span><p style={{fontSize:12,color:"rgba(255,255,255,0.75)",margin:"3px 0 0",lineHeight:1.6}}>{results.roadmap_summary[ph.k]}</p></div>:null)}
             </div></Reveal>}
 
             {/* CTA — Contact Us, not run another audit */}
             <Reveal delay={500}><div style={{ background:"linear-gradient(135deg,rgba(212,165,116,0.08),rgba(212,165,116,0.02))",border:"1px solid rgba(212,165,116,0.18)",borderRadius:16,padding:"32px 24px",textAlign:"center" }}>
               <h3 style={{ fontSize:"clamp(18px, 3vw, 22px)",fontWeight:700,color:"#fff",margin:"0 0 8px" }}>{tR.results.readyCta}</h3>
-              <p style={{ fontSize:13,color:"rgba(255,255,255,0.35)",margin:"0 0 20px",maxWidth:460,marginLeft:"auto",marginRight:"auto",lineHeight:1.7 }}>{tR.results.readySub}</p>
+              <p style={{ fontSize:13,color:"rgba(255,255,255,0.6)",margin:"0 0 20px",maxWidth:460,marginLeft:"auto",marginRight:"auto",lineHeight:1.7 }}>{tR.results.readySub}</p>
               <div style={{ display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap" }}>
                 <button onClick={()=>downloadReport(results,brandName,brandNameAr,industry,country,reportLang)} style={{ padding:"12px 24px",background:"linear-gradient(135deg, #d4a574, #b8860b)",border:"none",borderRadius:10,color:"#0a0a0f",fontSize:13,fontWeight:700,fontFamily:rff,cursor:"pointer" }}>⬇ {tR.results.download}</button>
                 <button onClick={()=>scrollTo("contact")} style={{ padding:"12px 24px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:10,color:"#fff",fontSize:13,fontWeight:600,fontFamily:rff,cursor:"pointer" }}>{tR.results.contact}</button>
@@ -842,26 +863,26 @@ export default function BayyinaAI() {
                 <div style={{ width:32,height:32,borderRadius:8,background:"linear-gradient(135deg, #d4a574, #b8860b)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:800,color:"#0a0a0f",fontFamily:"'Noto Kufi Arabic'" }}>بـ</div>
                 <span style={{ fontSize:16,fontWeight:700 }}>Bayyina.ai</span>
               </div>
-              <p style={{ fontSize:12,color:"rgba(255,255,255,0.35)",lineHeight:1.7,margin:"0 0 14px" }}>{t.footer.tagline}</p>
+              <p style={{ fontSize:12,color:"rgba(255,255,255,0.6)",lineHeight:1.7,margin:"0 0 14px" }}>{t.footer.tagline}</p>
               <p style={{ fontSize:11,color:"rgba(212,165,116,0.6)",margin:0 }}>{t.footer.made}</p>
             </div>
             <div>
               <h4 style={{ fontSize:12,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",marginBottom:12 }}>{t.footer.product}</h4>
-              {[{l:t.footer.audit,id:"hero"},{l:t.nav.how,id:"how"},{l:t.nav.pricing,id:"pricing"}].map(lnk=>(<p key={lnk.id} style={{margin:"0 0 8px"}}><span onClick={()=>scrollTo(lnk.id)} style={{fontSize:12,color:"rgba(255,255,255,0.35)",cursor:"pointer",transition:"color 0.2s"}} onMouseEnter={e=>e.target.style.color="#d4a574"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{lnk.l}</span></p>))}
+              {[{l:t.footer.audit,id:"hero"},{l:t.nav.how,id:"how"},{l:t.nav.pricing,id:"pricing"}].map(lnk=>(<p key={lnk.id} style={{margin:"0 0 8px"}}><span onClick={()=>scrollTo(lnk.id)} style={{fontSize:12,color:"rgba(255,255,255,0.6)",cursor:"pointer",transition:"color 0.2s"}} onMouseEnter={e=>e.target.style.color="#d4a574"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.6)"}>{lnk.l}</span></p>))}
             </div>
             <div>
               <h4 style={{ fontSize:12,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",marginBottom:12 }}>{t.footer.company}</h4>
-              {[{l:t.nav.about,id:"about"},{l:t.nav.contact,id:"contact"},{l:t.footer.careers,id:"contact"}].map((lnk,i)=>(<p key={i} style={{margin:"0 0 8px"}}><span onClick={()=>scrollTo(lnk.id)} style={{fontSize:12,color:"rgba(255,255,255,0.35)",cursor:"pointer",transition:"color 0.2s"}} onMouseEnter={e=>e.target.style.color="#d4a574"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{lnk.l}</span></p>))}
+              {[{l:t.nav.about,id:"about"},{l:t.nav.contact,id:"contact"},{l:t.footer.careers,id:"contact"}].map((lnk,i)=>(<p key={i} style={{margin:"0 0 8px"}}><span onClick={()=>scrollTo(lnk.id)} style={{fontSize:12,color:"rgba(255,255,255,0.6)",cursor:"pointer",transition:"color 0.2s"}} onMouseEnter={e=>e.target.style.color="#d4a574"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.6)"}>{lnk.l}</span></p>))}
             </div>
             <div>
               <h4 style={{ fontSize:12,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",marginBottom:12 }}>{t.footer.resources}</h4>
-              {[t.footer.docs,t.footer.blog,t.footer.privacy,t.footer.terms].map((lnk,i)=>(<p key={i} style={{margin:"0 0 8px"}}><span style={{fontSize:12,color:"rgba(255,255,255,0.35)",cursor:"pointer",transition:"color 0.2s"}} onMouseEnter={e=>e.target.style.color="#d4a574"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{lnk}</span></p>))}
+              {[t.footer.docs,t.footer.blog,t.footer.privacy,t.footer.terms].map((lnk,i)=>(<p key={i} style={{margin:"0 0 8px"}}><span style={{fontSize:12,color:"rgba(255,255,255,0.6)",cursor:"pointer",transition:"color 0.2s"}} onMouseEnter={e=>e.target.style.color="#d4a574"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.6)"}>{lnk}</span></p>))}
             </div>
           </div>
           <div style={{ borderTop:"1px solid rgba(255,255,255,0.06)",paddingTop:18,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10 }}>
-            <p style={{ fontSize:11,color:"rgba(255,255,255,0.25)",margin:0 }}>© {new Date().getFullYear()} Bayyina.ai (بيّنة). {t.footer.rights}</p>
+            <p style={{ fontSize:11,color:"rgba(255,255,255,0.5)",margin:0 }}>© {new Date().getFullYear()} Bayyina.ai (بيّنة). {t.footer.rights}</p>
             <div style={{ display:"flex",gap:12 }}>
-              {["𝕏","in","◉"].map((icon,i)=>(<span key={i} style={{ width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"rgba(255,255,255,0.35)",cursor:"pointer",transition:"all 0.2s" }} onMouseEnter={e=>{e.target.style.color="#d4a574";e.target.style.borderColor="rgba(212,165,116,0.3)";}} onMouseLeave={e=>{e.target.style.color="rgba(255,255,255,0.35)";e.target.style.borderColor="rgba(255,255,255,0.06)";}}>{icon}</span>))}
+              {["𝕏","in","◉"].map((icon,i)=>(<span key={i} style={{ width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"rgba(255,255,255,0.6)",cursor:"pointer",transition:"all 0.2s" }} onMouseEnter={e=>{e.target.style.color="#d4a574";e.target.style.borderColor="rgba(212,165,116,0.3)";}} onMouseLeave={e=>{e.target.style.color="rgba(255,255,255,0.6)";e.target.style.borderColor="rgba(255,255,255,0.06)";}}>{icon}</span>))}
             </div>
           </div>
         </div>
@@ -905,4 +926,3 @@ export default function BayyinaAI() {
     </div>
   );
 }
-
