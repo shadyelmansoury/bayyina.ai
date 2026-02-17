@@ -531,6 +531,7 @@ export default function BayyinaAI() {
   const [loadingStage, setLoadingStage] = useState(0);
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
+  const [retryable, setRetryable] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [contactSent, setContactSent] = useState(false);
   const [contactName, setContactName] = useState("");
@@ -573,24 +574,64 @@ export default function BayyinaAI() {
     if (auditUsed) { setView("usedAudit"); } else { setView("gate"); }
   };
 
-  const runAudit = async () => {
+  // ESC key to close gate/audit forms
+  useEffect(() => {
+    const handleEsc = (e) => { if (e.key === "Escape" && (view === "gate" || view === "audit")) setView("home"); };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [view]);
+
+  const runAudit = async (isRetry = false) => {
     if (!brandName.trim()) { setError(lang === "ar" ? "يرجى إدخال اسم العلامة" : "Please enter a brand name"); return; }
     if (!industry) { setError(lang === "ar" ? "يرجى اختيار القطاع" : "Please select an industry"); return; }
-    setError(""); setView("loading"); setLoadingStage(0); setReportLang("en"); // report always starts in English
+    setError(""); setView("loading"); setLoadingStage(0); if (!isRetry) setReportLang("en");
     const iv = setInterval(() => setLoadingStage(p => { if (p >= 4) { clearInterval(iv); return 4; } return p + 1; }), 3500);
     try {
       const ind = INDUSTRIES.find(i => i.value === industry);
       const uq = queries.trim() ? queries.split("\n").filter(q => q.trim()).join(", ") : `best ${ind?.label||""} in ${country}, top ${ind?.label||""} companies ${country}`;
       const res = await fetch("/.netlify/functions/audit", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ brandName, brandNameAr: brandNameAr || "N/A", industry: ind?.label || industry, country, website: website || "N/A", queries: uq }) });
-      const data = await res.json(); clearInterval(iv);
+      clearInterval(iv);
+      // Check Content-Type — if HTML returned, the function crashed
+      const ct = res.headers.get("content-type") || "";
+      if (!ct.includes("application/json")) {
+        throw new Error(lang === "ar"
+          ? "حدث خطأ في الخادم. يرجى المحاولة مرة أخرى."
+          : "Server returned an unexpected response. Please try again.");
+      }
+      const data = await res.json();
+      // Check for error response from our backend
+      if (data.error) {
+        const err = new Error(data.error);
+        err.retryable = data.retryable;
+        throw err;
+      }
       if (data.content?.[0]) {
         const clean = data.content[0].text.replace(/```json|```/g,"").trim();
         let parsed; try { parsed = JSON.parse(clean); } catch { parsed = repairJSON(clean); }
-        if (!parsed) throw new Error("Could not parse response");
+        if (!parsed) {
+          const err = new Error(lang === "ar"
+            ? "تعذر تحليل نتائج التدقيق. يرجى المحاولة مرة أخرى."
+            : "Could not parse audit results. Please try again.");
+          err.retryable = true;
+          throw err;
+        }
         setResults(parsed); setView("results"); setAuditUsed(true);
-      } else throw new Error(data.error?.message || "Unexpected response");
-    } catch (err) { clearInterval(iv); setError(`Analysis failed: ${err.message}`); setView("audit"); }
+      } else {
+        const err = new Error(lang === "ar"
+          ? "استجابة غير متوقعة من الخادم. يرجى المحاولة مرة أخرى."
+          : "Unexpected response from server. Please try again.");
+        err.retryable = true;
+        throw err;
+      }
+    } catch (err) {
+      clearInterval(iv);
+      const retryable = err.retryable !== false;
+      const msg = err.message || (lang === "ar" ? "حدث خطأ غير متوقع" : "An unexpected error occurred");
+      setError(msg);
+      setRetryable(retryable);
+      setView("audit");
+    }
   };
 
   const inp = (extra = {}) => ({ width: "100%", padding: "12px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#fff", fontSize: 14, fontFamily: ff, outline: "none", boxSizing: "border-box", transition: "border-color 0.3s, box-shadow 0.3s", ...extra });
@@ -704,7 +745,8 @@ export default function BayyinaAI() {
 
         {/* ═══ LEAD GATE ═══ */}
         {view === "gate" && (
-          <div style={{ maxWidth: 480, margin: "0 auto", padding: "48px 0 64px", animation: "fadeIn 0.5s" }}>
+          <div style={{ maxWidth: 480, margin: "0 auto", padding: "48px 0 64px", animation: "fadeIn 0.5s", position: "relative" }}>
+            <button onClick={()=>setView("home")} style={{ position:"absolute",top:48,right:0,background:"none",border:"none",color:"rgba(255,255,255,0.45)",fontSize:22,cursor:"pointer",padding:"4px 8px",lineHeight:1 }} title="Close">×</button>
             <Reveal><div style={{ textAlign: "center", marginBottom: 28 }}>
               <div style={{ width: 56, height: 56, borderRadius: 14, background: "linear-gradient(135deg, #d4a574, #b8860b)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, color: "#0a0a0f", fontFamily: "'Noto Kufi Arabic'", margin: "0 auto 16px", boxShadow: "0 4px 24px rgba(212,165,116,0.3)" }}>بـ</div>
               <h2 style={{ fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 800, color: "#fff", margin: "0 0 8px" }}>{t.gate.title}</h2>
@@ -732,7 +774,10 @@ export default function BayyinaAI() {
         {view === "audit" && (
           <div style={{ maxWidth: 620, margin: "0 auto", padding: "28px 0 48px", animation: "fadeIn 0.5s" }}>
             <Reveal><div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18,flexWrap:"wrap",gap:8 }}>
-              <p style={{ fontSize:12,color:"rgba(255,255,255,0.55)",margin:0 }}>{lang==="ar"?`مرحباً ${leadName}`:`Welcome, ${leadName}`} — {leadCompany}</p>
+              <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+                <button onClick={()=>setView("home")} style={{ background:"none",border:"none",color:"rgba(255,255,255,0.45)",fontSize:18,cursor:"pointer",padding:"2px 6px" }}>←</button>
+                <p style={{ fontSize:12,color:"rgba(255,255,255,0.55)",margin:0 }}>{lang==="ar"?`مرحباً ${leadName}`:`Welcome, ${leadName}`} — {leadCompany}</p>
+              </div>
               <span style={{ fontSize:9,color:"#d4a574",background:"rgba(212,165,116,0.1)",padding:"3px 8px",borderRadius:4,fontWeight:600 }}>{lang==="ar"?"تجربة مجانية لمرة واحدة":"FREE ONE-TIME TRIAL"}</span>
             </div></Reveal>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:14 }} className="form-grid">
@@ -764,7 +809,10 @@ export default function BayyinaAI() {
                 ))}
               </div>}
             </div></Reveal>
-            {error && <p style={{ color:"#ef4444",fontSize:12,margin:"12px 0 0",background:"rgba(239,68,68,0.1)",padding:"8px 12px",borderRadius:8 }}>{error}</p>}
+            {error && <div style={{ color:"#ef4444",fontSize:12,margin:"12px 0 0",background:"rgba(239,68,68,0.1)",padding:"12px 14px",borderRadius:8 }}>
+              <p style={{ margin: 0 }}>{error}</p>
+              {retryable && <button onClick={()=>runAudit(true)} style={{ marginTop:8,padding:"8px 20px",background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.3)",borderRadius:6,color:"#ef4444",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:ff }}>{lang==="ar"?"إعادة المحاولة":"Retry Audit"}</button>}
+            </div>}
             <Reveal delay={350}><button onClick={runAudit} style={{ width:"100%",padding:16,marginTop:18,background:"linear-gradient(135deg, #d4a574, #b8860b)",border:"none",borderRadius:12,color:"#0a0a0f",fontSize:15,fontWeight:700,fontFamily:ff,cursor:"pointer",boxShadow:"0 4px 24px rgba(212,165,116,0.3)",transition:"transform 0.3s" }} onMouseEnter={e=>e.target.style.transform="translateY(-2px)"} onMouseLeave={e=>e.target.style.transform="none"}>{t.form.run}</button>
               <p style={{ fontSize:10,color:"rgba(255,255,255,0.45)",textAlign:"center",margin:"6px 0 0" }}>{t.form.running}</p></Reveal>
           </div>
