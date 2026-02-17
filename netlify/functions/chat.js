@@ -1,3 +1,6 @@
+// netlify/functions/chat.js — Bayyina.ai Chat Agent
+// Robust error handling with proper JSON responses
+
 const SYSTEM_PROMPT = `You are the Bayyina.ai assistant. Answer questions about GEO (Generative Engine Optimization), Arabic AI visibility, and pricing. Be concise (2-3 sentences). Reply in the user's language.
 
 Pricing:
@@ -23,27 +26,59 @@ export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, headers, body: JSON.stringify({ error: "Method not allowed" }) };
   }
+
   const API_KEY = process.env.ANTHROPIC_API_KEY;
   if (!API_KEY) {
     return { statusCode: 500, headers, body: JSON.stringify({ error: "API key not configured" }) };
   }
+
   try {
-    const { message } = JSON.parse(event.body);
-    if (!message || typeof message !== "string") {
-      return { statusCode: 400, headers, body: JSON.stringify({ error: "message is required" }) };
+    let input;
+    try {
+      input = JSON.parse(event.body);
+    } catch {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid request format" }) };
     }
+
+    const message = typeof input.message === "string" ? input.message.trim().slice(0, 1000) : "";
+    if (!message) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Message is required" }) };
+    }
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 24000);
+
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": API_KEY, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 800, system: SYSTEM_PROMPT, messages: [{ role: "user", content: message }] }),
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 800,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: "user", content: message }],
+      }),
+      signal: controller.signal,
     });
+    clearTimeout(timer);
+
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      return { statusCode: response.status, headers, body: JSON.stringify({ error: errData?.error?.message || `API error: ${response.status}` }) };
+      return {
+        statusCode: response.status,
+        headers,
+        body: JSON.stringify({ error: errData?.error?.message || "API error: " + response.status }),
+      };
     }
+
     const data = await response.json();
     return { statusCode: 200, headers, body: JSON.stringify(data) };
   } catch (err) {
-    return { statusCode: 500, headers, body: JSON.stringify({ error: "Internal server error" }) };
+    console.error("Chat function error:", err.message);
+    const msg = err.name === "AbortError" ? "Request timed out" : "Internal server error";
+    return { statusCode: 500, headers, body: JSON.stringify({ error: msg }) };
   }
 };
